@@ -2,7 +2,7 @@ package entityData
 
 import (
 	"gorm.io/gorm"
-	"talentpitch/src/modules/users/domain"
+	domainuser "talentpitch/src/modules/users/domain"
 )
 
 type User struct {
@@ -12,8 +12,8 @@ type User struct {
 	Email string
 }
 
-func (u *User) ToEntity() *domain.User {
-	return &domain.User{
+func (u *User) ToEntity() *domainuser.User {
+	return &domainuser.User{
 		Name:  u.Name,
 		Email: u.Email,
 		ID:    u.ID,

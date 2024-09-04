@@ -1,47 +1,47 @@
-package restuser
+package restvideo
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"talentpitch/src/modules/users/domain"
+	domainvideos "talentpitch/src/modules/videos/domain"
 )
 
 type Controller interface {
-	getUsers(ctx *gin.Context)
-	createUser(ctx *gin.Context)
-	getUserByID(ctx *gin.Context)
-	updateUser(ctx *gin.Context)
-	deleteUser(ctx *gin.Context)
+	getVideo(ctx *gin.Context)
+	createVideo(ctx *gin.Context)
+	getVideoByID(ctx *gin.Context)
+	updateVideo(ctx *gin.Context)
+	deleteVideo(ctx *gin.Context)
 }
 
 type controller struct {
-	useCase domainuser.UseCase
+	useCase domainvideos.UseCase
 }
 
-func NewController(useCase domainuser.UseCase) Controller {
+func NewController(useCase domainvideos.UseCase) Controller {
 	return &controller{
 		useCase: useCase,
 	}
 }
 
-func (c *controller) getUsers(ctx *gin.Context) {
-	users, err := c.useCase.GetUsers()
+func (c *controller) getVideo(ctx *gin.Context) {
+	Videos, err := c.useCase.GetVideos()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	ctx.JSON(http.StatusOK, users)
+	ctx.JSON(http.StatusOK, Videos)
 }
 
-func (c *controller) createUser(ctx *gin.Context) {
-	var dataRq domainuser.User
+func (c *controller) createVideo(ctx *gin.Context) {
+	var dataRq domainvideos.Videos
 
 	if err := ctx.ShouldBindJSON(&dataRq); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err := c.useCase.CreateUser(dataRq)
+	err := c.useCase.CreateVideo(dataRq)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -50,21 +50,21 @@ func (c *controller) createUser(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
-func (c *controller) getUserByID(ctx *gin.Context) {
+func (c *controller) getVideoByID(ctx *gin.Context) {
 	ID := ctx.Param("id")
 
-	user, err := c.useCase.GetUserByID(ID)
+	Video, err := c.useCase.GetVideoByID(ID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, Video)
 }
 
-func (c *controller) updateUser(ctx *gin.Context) {
+func (c *controller) updateVideo(ctx *gin.Context) {
 	ID := ctx.Param("id")
 
-	var dataRq domainuser.User
+	var dataRq domainvideos.Videos
 	if err := ctx.ShouldBindJSON(&dataRq); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -79,7 +79,7 @@ func (c *controller) updateUser(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
-func (c *controller) deleteUser(ctx *gin.Context) {
+func (c *controller) deleteVideo(ctx *gin.Context) {
 	ID := ctx.Param("id")
 
 	err := c.useCase.DeleteByID(ID)

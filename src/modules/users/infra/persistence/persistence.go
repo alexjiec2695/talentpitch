@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"talentpitch/src/modules/users/domain"
+	domainuser "talentpitch/src/modules/users/domain"
 	"talentpitch/src/modules/users/infra/persistence/entityData"
 )
 
@@ -12,14 +12,14 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) domain.UserRepository {
+func NewUserRepository(db *gorm.DB) domainuser.UserRepository {
 	db.AutoMigrate(entityData.User{})
 	return &userRepository{
 		db: db,
 	}
 }
 
-func (u *userRepository) Create(user domain.User) error {
+func (u *userRepository) Create(user domainuser.User) error {
 	tx := u.db.Create(&entityData.User{
 		ID:    uuid.New().String(),
 		Name:  user.Name,
@@ -33,7 +33,7 @@ func (u *userRepository) Create(user domain.User) error {
 	return nil
 }
 
-func (u *userRepository) GetUserByID(Id string) (*domain.User, error) {
+func (u *userRepository) GetUserByID(Id string) (*domainuser.User, error) {
 	user := entityData.User{}
 	result := u.db.First(&user, "id = ?", Id)
 
@@ -48,7 +48,7 @@ func (u *userRepository) GetUserByID(Id string) (*domain.User, error) {
 	return user.ToEntity(), nil
 }
 
-func (u *userRepository) Update(userEntity domain.User) error {
+func (u *userRepository) Update(userEntity domainuser.User) error {
 	user := entityData.User{}
 
 	result := u.db.Model(user).Where("id = ?", userEntity.ID).Updates(entityData.User{
@@ -83,7 +83,7 @@ func (u *userRepository) DeleteByID(Id string) error {
 	return nil
 }
 
-func (u *userRepository) GetUsers() ([]*domain.User, error) {
+func (u *userRepository) GetUsers() ([]*domainuser.User, error) {
 	users := []entityData.User{}
 	result := u.db.Find(&users)
 
@@ -92,10 +92,10 @@ func (u *userRepository) GetUsers() ([]*domain.User, error) {
 	}
 
 	if result.RowsAffected == 0 {
-		return nil, errors.New("users data not found")
+		return []*domainuser.User{}, nil
 	}
 
-	response := make([]*domain.User, len(users))
+	response := make([]*domainuser.User, len(users))
 
 	for i := 0; i < len(users); i++ {
 		response[i] = users[i].ToEntity()

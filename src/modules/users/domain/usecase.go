@@ -1,4 +1,4 @@
-package domain
+package domainuser
 
 type useCase struct {
 	repo UserRepository

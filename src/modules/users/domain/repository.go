@@ -1,4 +1,4 @@
-package domain
+package domainuser
 
 type UserRepository interface {
 	Create(user User) error
