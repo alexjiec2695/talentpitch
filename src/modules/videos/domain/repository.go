@@ -6,4 +6,5 @@ type VideosRepository interface {
 	Update(videosEntity Videos) error
 	DeleteByID(Id string) error
 	GetVideos() ([]*Videos, error)
+	MassiveCreate()
 }

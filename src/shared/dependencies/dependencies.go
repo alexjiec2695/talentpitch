@@ -1,8 +1,9 @@
 package dependencies
 
 import (
-	"log"
-	"os"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"sync"
 	domainchallenge "talentpitch/src/modules/challenges/domain"
 	persistenceChallenge "talentpitch/src/modules/challenges/infra/persistence"
 	restchallenges "talentpitch/src/modules/challenges/infra/rest"
@@ -16,7 +17,7 @@ import (
 	"talentpitch/src/shared/rest"
 )
 
-func BuildMainDependencies() {
+func BuildMainDependencies() *gin.Engine {
 	server := rest.NewServer()
 	db := persistence.InitDB()
 
@@ -32,13 +33,29 @@ func BuildMainDependencies() {
 	useCaseChallenge := domainchallenge.NewUseCase(challengeRepository)
 	challengeController := restchallenges.NewController(useCaseChallenge)
 
+	wg := sync.WaitGroup{}
+	wg.Add(3)
+
+	go func() {
+		defer wg.Done()
+		userRepository.MassiveCreate()
+	}()
+
+	go func() {
+		defer wg.Done()
+		videoRepository.MassiveCreate()
+	}()
+
+	go func() {
+		defer wg.Done()
+		challengeRepository.MassiveCreate()
+	}()
+	fmt.Println("Generating information.......")
+	wg.Wait()
+
 	restchallenges.Handler(server, challengeController)
 	restVideo.Handler(server, videoController)
 	restUser.Handler(server, userController)
 
-	err := server.Run(os.Getenv("PORT"))
-
-	if err != nil {
-		log.Fatalln(err)
-	}
+	return server
 }

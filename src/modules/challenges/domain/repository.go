@@ -6,4 +6,5 @@ type ChallengesRepository interface {
 	Update(challengesEntity Challenges) error
 	DeleteByID(Id string) error
 	GetChallenges() ([]*Challenges, error)
+	MassiveCreate()
 }
