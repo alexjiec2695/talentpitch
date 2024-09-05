@@ -3,6 +3,7 @@ package restvideo
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	domainvideos "talentpitch/src/modules/videos/domain"
 )
 
@@ -25,11 +26,16 @@ func NewController(useCase domainvideos.UseCase) Controller {
 }
 
 func (c *controller) getVideo(ctx *gin.Context) {
-	Videos, err := c.useCase.GetVideos()
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize := 10
+	offset := (page - 1) * pageSize
+
+	Videos, err := c.useCase.GetVideos(pageSize, offset)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
+
 	ctx.JSON(http.StatusOK, Videos)
 }
 

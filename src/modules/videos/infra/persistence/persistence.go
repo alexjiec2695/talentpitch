@@ -90,9 +90,9 @@ func (v *videosRepository) DeleteByID(Id string) error {
 	return nil
 }
 
-func (v *videosRepository) GetVideos() ([]*domainvideos.Videos, error) {
+func (v *videosRepository) GetVideos(pageSize, offset int) ([]*domainvideos.Videos, error) {
 	videos := []entityData.Videos{}
-	result := v.db.Find(&videos)
+	result := v.db.Limit(pageSize).Offset(offset).Find(&videos)
 
 	if result.Error != nil {
 		return nil, result.Error

@@ -90,9 +90,9 @@ func (u *userRepository) DeleteByID(Id string) error {
 	return nil
 }
 
-func (u *userRepository) GetUsers() ([]*domainuser.User, error) {
+func (u *userRepository) GetUsers(pageSize, offset int) ([]*domainuser.User, error) {
 	users := []entityData.User{}
-	result := u.db.Find(&users)
+	result := u.db.Limit(pageSize).Offset(offset).Find(&users)
 
 	if result.Error != nil {
 		return nil, result.Error

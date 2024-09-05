@@ -9,7 +9,7 @@ type UseCase interface {
 	GetVideoByID(ID string) (*Videos, error)
 	Update(video Videos) error
 	DeleteByID(ID string) error
-	GetVideos() ([]*Videos, error)
+	GetVideos(pageSize, offset int) ([]*Videos, error)
 }
 
 func NewUseCase(repo VideosRepository) UseCase {
@@ -34,6 +34,6 @@ func (u *useCase) DeleteByID(ID string) error {
 	return u.repo.DeleteByID(ID)
 }
 
-func (u *useCase) GetVideos() ([]*Videos, error) {
-	return u.repo.GetVideos()
+func (u *useCase) GetVideos(pageSize, offset int) ([]*Videos, error) {
+	return u.repo.GetVideos(pageSize, offset)
 }

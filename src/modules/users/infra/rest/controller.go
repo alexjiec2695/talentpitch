@@ -3,6 +3,7 @@ package restuser
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"talentpitch/src/modules/users/domain"
 )
 
@@ -25,7 +26,11 @@ func NewController(useCase domainuser.UseCase) Controller {
 }
 
 func (c *controller) getUsers(ctx *gin.Context) {
-	users, err := c.useCase.GetUsers()
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize := 10
+	offset := (page - 1) * pageSize
+
+	users, err := c.useCase.GetUsers(pageSize, offset)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

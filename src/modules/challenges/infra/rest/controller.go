@@ -3,6 +3,7 @@ package restchallenges
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	domainchallenge "talentpitch/src/modules/challenges/domain"
 )
 
@@ -25,7 +26,11 @@ func NewController(useCase domainchallenge.UseCase) Controller {
 }
 
 func (c *controller) getChallenges(ctx *gin.Context) {
-	Challenges, err := c.useCase.GetChallenges()
+	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	pageSize := 10
+	offset := (page - 1) * pageSize
+
+	Challenges, err := c.useCase.GetChallenges(pageSize, offset)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

@@ -90,9 +90,9 @@ func (v *challengeRepository) DeleteByID(Id string) error {
 	return nil
 }
 
-func (v *challengeRepository) GetChallenges() ([]*domainchallenge.Challenges, error) {
+func (v *challengeRepository) GetChallenges(pageSize, offset int) ([]*domainchallenge.Challenges, error) {
 	challenge := []entityData.Challenges{}
-	result := v.db.Find(&challenge)
+	result := v.db.Limit(pageSize).Offset(offset).Find(&challenge)
 
 	if result.Error != nil {
 		return nil, result.Error

@@ -5,6 +5,6 @@ type UserRepository interface {
 	GetUserByID(Id string) (*User, error)
 	Update(userEntity User) error
 	DeleteByID(Id string) error
-	GetUsers() ([]*User, error)
+	GetUsers(pageSize, offset int) ([]*User, error)
 	MassiveCreate()
 }

@@ -9,7 +9,7 @@ type UseCase interface {
 	GetChallengesByID(ID string) (*Challenges, error)
 	Update(challenges Challenges) error
 	DeleteByID(ID string) error
-	GetChallenges() ([]*Challenges, error)
+	GetChallenges(pageSize, offset int) ([]*Challenges, error)
 }
 
 func NewUseCase(repo ChallengesRepository) UseCase {
@@ -34,6 +34,6 @@ func (u *useCase) DeleteByID(ID string) error {
 	return u.repo.DeleteByID(ID)
 }
 
-func (u *useCase) GetChallenges() ([]*Challenges, error) {
-	return u.repo.GetChallenges()
+func (u *useCase) GetChallenges(pageSize, offset int) ([]*Challenges, error) {
+	return u.repo.GetChallenges(pageSize, offset)
 }
