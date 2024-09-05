@@ -1,7 +1,9 @@
 package dependencies
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"sync"
 	domainchallenge "talentpitch/src/modules/challenges/domain"
 	persistenceChallenge "talentpitch/src/modules/challenges/infra/persistence"
 	restchallenges "talentpitch/src/modules/challenges/infra/rest"
@@ -31,28 +33,26 @@ func BuildMainDependencies() *gin.Engine {
 	useCaseChallenge := domainchallenge.NewUseCase(challengeRepository)
 	challengeController := restchallenges.NewController(useCaseChallenge)
 
-	/*
-		wg := sync.WaitGroup{}
-		wg.Add(3)
+	wg := sync.WaitGroup{}
+	wg.Add(3)
 
-		go func() {
-			defer wg.Done()
-			userRepository.MassiveCreate()
-		}()
+	go func() {
+		defer wg.Done()
+		userRepository.MassiveCreate()
+	}()
 
-		go func() {
-			defer wg.Done()
-			videoRepository.MassiveCreate()
-		}()
+	go func() {
+		defer wg.Done()
+		videoRepository.MassiveCreate()
+	}()
 
-		go func() {
-			defer wg.Done()
-			challengeRepository.MassiveCreate()
-		}()
-		fmt.Println("Generating information.......")
-		wg.Wait()
-
-	*/
+	go func() {
+		defer wg.Done()
+		challengeRepository.MassiveCreate()
+	}()
+	fmt.Println("Generating information.......")
+	wg.Wait()
+	fmt.Println("The generation of information was completed successfully")
 
 	restchallenges.Handler(server, challengeController)
 	restVideo.Handler(server, videoController)
